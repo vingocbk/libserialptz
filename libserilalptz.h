@@ -273,7 +273,7 @@ void libserilalptz::writeData(char Sync, char Address, char Command1, char Comma
     this->serial_port.DrainWriteBuffer();
 }
 
-char libserilalptz::readByte(size_t msTimeout = 0)
+char libserilalptz::readByte(size_t msTimeout)
 {
     char c;
     this->serial_port.ReadByte(c, msTimeout);

@@ -4,7 +4,7 @@
 ### C++ ###
 # Prerequisites
 *.d
-
+hellomake
 # Compiled Object files
 *.slo
 *.lo

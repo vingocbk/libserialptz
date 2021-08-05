@@ -8,7 +8,7 @@ int main()
 
     libserilalptz.querryPanPosition();
 
-    for(unsigned int i = 0; i < 500; i++)
+    for(unsigned int i = 0; i < 50; i++)
     {
         try
         {
@@ -18,7 +18,7 @@ int main()
             // std::cout << read_byte_1 << std::endl;
             datares = libserilalptz.readByte(10);
             std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
+            std::cout << std::hex << datares << std::endl;
             
         }
         catch (const ReadTimeout&)
