@@ -3,9 +3,7 @@
 
 #define MAX_SPEED   0x3F
 
-
 libserilalptz libserilalptz;
-
 
 void querry_Pan_Position(){
     std::cout << "querryPanPosition" << std::endl;
@@ -22,7 +20,7 @@ void querry_Pan_Position(){
             // std::cout << read_byte_1 << std::endl;
             datares = libserilalptz.readByte(10);
             std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
+            std::cout << (int)datares << std::endl;
             
         }
         catch (const ReadTimeout&)
@@ -223,3 +221,4 @@ int main()
 }
 
 // rsync -a -e "ssh -p 1222" /home/ngoc/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
+// rsync -a -e "ssh -p 1222" /home/ubuntu/Documents/gsoap/libserilalptz nano@tigerpuma.ddns.net:~/ngocnv_ws
