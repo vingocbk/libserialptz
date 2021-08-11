@@ -9,19 +9,29 @@ void querry_Pan_Position(){
     std::cout << "querryPanPosition" << std::endl;
     // libserilalptz libserilalptz;
     libserilalptz.querryPanPosition();
-    char datares;
+    char datares[7];
+    bool start = false;
+    int count = 0;
     for(unsigned int i = 0; i < 50; i++)
     {
         try
         {
             // Read a single byte of data from the serial ports.
-            // std::cout << "---Read---" << std::endl;
-            // serial_port.Read(read_byte_1, 50);
-            // std::cout << read_byte_1 << std::endl;
-            datares = libserilalptz.readByte(10);
-            std::cout << "byte " << i << ": ";
-            std::cout << (int)datares << std::endl;
-            
+            char c = libserilalptz.readByte(10);
+            if(c == 0xFF){
+                start = true;
+            }
+            if(start)
+            {
+                datares[count] = c;
+                std::cout << "byte " << count << ": ";
+                std::cout << std::hex << (int)datares[count] << std::endl;
+                count++;
+                if(count == 7)
+                {
+                    break;
+                }
+            }
         }
         catch (const ReadTimeout&)
         {
@@ -34,19 +44,29 @@ void querry_Tilt_Position(){
     std::cout << "querryTiltPosition" << std::endl;
     // libserilalptz libserilalptz;
     libserilalptz.querryTiltPosition();
-    char datares;
+    char datares[7];
+    bool start = false;
+    int count = 0;
     for(unsigned int i = 0; i < 50; i++)
     {
         try
         {
             // Read a single byte of data from the serial ports.
-            // std::cout << "---Read---" << std::endl;
-            // serial_port.Read(read_byte_1, 50);
-            // std::cout << read_byte_1 << std::endl;
-            datares = libserilalptz.readByte(10);
-            std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
-            
+            char c = libserilalptz.readByte(10);
+            if(c == 0xFF){
+                start = true;
+            }
+            if(start)
+            {
+                datares[count] = c;
+                std::cout << "byte " << count << ": ";
+                std::cout << std::hex << (int)datares[count] << std::endl;
+                count++;
+                if(count == 7)
+                {
+                    break;
+                }
+            }
         }
         catch (const ReadTimeout&)
         {
@@ -59,127 +79,30 @@ void stop_All(){
     std::cout << "stopAll" << std::endl;
     // libserilalptz libserilalptz;
     libserilalptz.stopAll();
-    char datares;
-    for(unsigned int i = 0; i < 50; i++)
-    {
-        try
-        {
-            // Read a single byte of data from the serial ports.
-            // std::cout << "---Read---" << std::endl;
-            // serial_port.Read(read_byte_1, 50);
-            // std::cout << read_byte_1 << std::endl;
-            datares = libserilalptz.readByte(10);
-            std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
-            
-        }
-        catch (const ReadTimeout&)
-        {
-            // std::cerr << "The ReadByte() call has timed out." << std::endl;
-        }
-    }
 }
 void pan_Left(){
     std::cout << "panLeft" << std::endl;
     // libserilalptz libserilalptz;
     libserilalptz.panLeft(MAX_SPEED);
-    char datares;
-    for(unsigned int i = 0; i < 50; i++)
-    {
-        try
-        {
-            // Read a single byte of data from the serial ports.
-            // std::cout << "---Read---" << std::endl;
-            // serial_port.Read(read_byte_1, 50);
-            // std::cout << read_byte_1 << std::endl;
-            datares = libserilalptz.readByte(10);
-            std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
-            
-        }
-        catch (const ReadTimeout&)
-        {
-            // std::cerr << "The ReadByte() call has timed out." << std::endl;
-        }
-    }
 }
 
 void pan_Right(){
     std::cout << "panRight" << std::endl;
     // libserilalptz libserilalptz;
     libserilalptz.panRight(MAX_SPEED);
-    char datares;
-    for(unsigned int i = 0; i < 50; i++)
-    {
-        try
-        {
-            // Read a single byte of data from the serial ports.
-            // std::cout << "---Read---" << std::endl;
-            // serial_port.Read(read_byte_1, 50);
-            // std::cout << read_byte_1 << std::endl;
-            datares = libserilalptz.readByte(10);
-            std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
-            
-        }
-        catch (const ReadTimeout&)
-        {
-            // std::cerr << "The ReadByte() call has timed out." << std::endl;
-        }
-    }
 }
 
 void tilt_Up(){
     std::cout << "tiltUp" << std::endl;
     // libserilalptz libserilalptz;
     libserilalptz.tiltUp(MAX_SPEED);
-    char datares;
-    for(unsigned int i = 0; i < 50; i++)
-    {
-        try
-        {
-            // Read a single byte of data from the serial ports.
-            // std::cout << "---Read---" << std::endl;
-            // serial_port.Read(read_byte_1, 50);
-            // std::cout << read_byte_1 << std::endl;
-            datares = libserilalptz.readByte(10);
-            std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
-            
-        }
-        catch (const ReadTimeout&)
-        {
-            // std::cerr << "The ReadByte() call has timed out." << std::endl;
-        }
-    }
 }
 
 void tile_Down(){
     std::cout << "tiltDown" << std::endl;
     // libserilalptz libserilalptz;
     libserilalptz.tiltDown(MAX_SPEED);
-    char datares;
-    for(unsigned int i = 0; i < 50; i++)
-    {
-        try
-        {
-            // Read a single byte of data from the serial ports.
-            // std::cout << "---Read---" << std::endl;
-            // serial_port.Read(read_byte_1, 50);
-            // std::cout << read_byte_1 << std::endl;
-            datares = libserilalptz.readByte(10);
-            std::cout << "byte " << i << ": ";
-            std::cout << std::hex << (int)datares << std::endl;
-            
-        }
-        catch (const ReadTimeout&)
-        {
-            // std::cerr << "The ReadByte() call has timed out." << std::endl;
-        }
-    }
 }
-
-
 
 
 int main()
@@ -221,4 +144,4 @@ int main()
 }
 
 // rsync -a -e "ssh -p 1222" /home/ngoc/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
-// rsync -a -e "ssh -p 1222" /home/ubuntu/Documents/gsoap/libserilalptz nano@tigerpuma.ddns.net:~/ngocnv_ws
+// rsync -a -e "ssh -p 1222" /home/ubuntu/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
