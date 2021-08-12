@@ -1,5 +1,7 @@
 #include <iostream>
 #include "libserilalptz.h"
+#include "httplib.h"
+#include <jsoncpp/json/json.h>
 
 #define MAX_SPEED   0x3F
 
@@ -80,67 +82,166 @@ void stop_All(){
     // libserilalptz libserilalptz;
     libserilalptz.stopAll();
 }
-void pan_Left(){
+void pan_Left(char speed){
     std::cout << "panLeft" << std::endl;
     // libserilalptz libserilalptz;
-    libserilalptz.panLeft(MAX_SPEED);
+    libserilalptz.panLeft(speed);
 }
 
-void pan_Right(){
+void pan_Right(char speed){
     std::cout << "panRight" << std::endl;
     // libserilalptz libserilalptz;
-    libserilalptz.panRight(MAX_SPEED);
+    libserilalptz.panRight(speed);
 }
 
-void tilt_Up(){
+void tilt_Up(char speed){
     std::cout << "tiltUp" << std::endl;
     // libserilalptz libserilalptz;
-    libserilalptz.tiltUp(MAX_SPEED);
+    libserilalptz.tiltUp(speed);
 }
 
-void tile_Down(){
+void tile_Down(char speed){
     std::cout << "tiltDown" << std::endl;
     // libserilalptz libserilalptz;
-    libserilalptz.tiltDown(MAX_SPEED);
+    libserilalptz.tiltDown(speed);
 }
 
 
 int main()
 {
-    while (true)
-    {
-        char i;
-        std::cout << std::hex << "input i: ";
-        std::cin >> i;
-        if(i == 'a')
-        {
-            querry_Pan_Position();
-        }
-        else if(i == 's')
-        {
-            stop_All();
-        }
-        else if(i == 'd')
-        {
-            querry_Tilt_Position();
-        }
-        else if(i == 'e')
-        {
-            pan_Left();
-        }
-        else if(i == 'r')
-        {
-            pan_Right();
-        }
-        else if(i == 't')
-        {
-            tile_Down();
-        }
-        else if(i == 'h')
-        {
-            tilt_Up();
-        }
-    }
+    // HTTP
+	httplib::Server svr;
+	svr.Get("/ptz/v1.0/querryPanPosition", [](const httplib::Request &, httplib::Response &res) {
+		res.set_content("querryPanPosition", "text/plain");
+        querry_Pan_Position();
+	});
+    svr.Get("/ptz/v1.0/querryTiltPosition", [](const httplib::Request &, httplib::Response &res) {
+		res.set_content("querryTiltPosition", "text/plain");
+        querry_Tilt_Position();
+	});
+    svr.Get("/ptz/v1.0/stopAll", [](const httplib::Request &, httplib::Response &res) {
+		res.set_content("stopAll", "text/plain");
+        stop_All();
+	});
+
+
+    svr.Post("/ptz/v1.0/panLeft",
+        [&](const httplib::Request &req, httplib::Response &res, const httplib::ContentReader &content_reader) {
+            if (req.is_multipart_form_data()) {
+            // NOTE: `content_reader` is blocking until every form data field is read
+            httplib::MultipartFormDataItems files;
+            content_reader(
+                [&](const httplib::MultipartFormData &file) {
+                files.push_back(file);
+                return true;
+                },
+                [&](const char *data, size_t data_length) {
+                files.back().content.append(data, data_length);
+                return true;
+                });
+            } else {
+                std::string body;
+                content_reader([&](const char *data, size_t data_length) {
+                    body.append(data, data_length);
+                    std::cout << body << std::endl;
+                    Json::Value root_dataResponse;
+                    Json::Reader reader;
+                    reader.parse(body, root_dataResponse);
+                    char speed = (char)root_dataResponse["speed"].asInt();
+                    std::cout << std::hex << (int)speed << std::endl;
+                    pan_Left(speed);
+                    return true;
+                });
+            }
+        });
+    svr.Post("/ptz/v1.0/panRight",
+        [&](const httplib::Request &req, httplib::Response &res, const httplib::ContentReader &content_reader) {
+            if (req.is_multipart_form_data()) {
+            // NOTE: `content_reader` is blocking until every form data field is read
+            httplib::MultipartFormDataItems files;
+            content_reader(
+                [&](const httplib::MultipartFormData &file) {
+                files.push_back(file);
+                return true;
+                },
+                [&](const char *data, size_t data_length) {
+                files.back().content.append(data, data_length);
+                return true;
+                });
+            } else {
+                std::string body;
+                content_reader([&](const char *data, size_t data_length) {
+                    body.append(data, data_length);
+                    std::cout << body << std::endl;
+                    Json::Value root_dataResponse;
+                    Json::Reader reader;
+                    reader.parse(body, root_dataResponse);
+                    char speed = (char)root_dataResponse["speed"].asFloat();
+                    pan_Right(speed);
+                    return true;
+                });
+            }
+        });
+    svr.Post("/ptz/v1.0/tiltUp",
+        [&](const httplib::Request &req, httplib::Response &res, const httplib::ContentReader &content_reader) {
+            if (req.is_multipart_form_data()) {
+            // NOTE: `content_reader` is blocking until every form data field is read
+            httplib::MultipartFormDataItems files;
+            content_reader(
+                [&](const httplib::MultipartFormData &file) {
+                files.push_back(file);
+                return true;
+                },
+                [&](const char *data, size_t data_length) {
+                files.back().content.append(data, data_length);
+                return true;
+                });
+            } else {
+                std::string body;
+                content_reader([&](const char *data, size_t data_length) {
+                    body.append(data, data_length);
+                    std::cout << body << std::endl;
+                    Json::Value root_dataResponse;
+                    Json::Reader reader;
+                    reader.parse(body, root_dataResponse);
+                    char speed = (char)root_dataResponse["speed"].asFloat();
+                    tilt_Up(speed);
+                    return true;
+                });
+            }
+        });
+    svr.Post("/ptz/v1.0/tiltDown",
+        [&](const httplib::Request &req, httplib::Response &res, const httplib::ContentReader &content_reader) {
+            if (req.is_multipart_form_data()) {
+            // NOTE: `content_reader` is blocking until every form data field is read
+            httplib::MultipartFormDataItems files;
+            content_reader(
+                [&](const httplib::MultipartFormData &file) {
+                files.push_back(file);
+                return true;
+                },
+                [&](const char *data, size_t data_length) {
+                files.back().content.append(data, data_length);
+                return true;
+                });
+            } else {
+                std::string body;
+                content_reader([&](const char *data, size_t data_length) {
+                    body.append(data, data_length);
+                    std::cout << body << std::endl;
+                    Json::Value root_dataResponse;
+                    Json::Reader reader;
+                    reader.parse(body, root_dataResponse);
+                    char speed = (char)root_dataResponse["speed"].asFloat();
+                    tile_Down(speed);
+                    return true;
+                });
+            }
+        });
+
+	std::cout << "start http server" << std::endl;
+	svr.listen("0.0.0.0", 8080);
+
 }
 
 // rsync -a -e "ssh -p 1222" /home/ngoc/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
