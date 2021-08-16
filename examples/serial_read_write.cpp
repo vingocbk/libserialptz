@@ -123,6 +123,18 @@ int main()
 		res.set_content("stopAll", "text/plain");
         stop_All();
 	});
+    svr.Get("/ptz/v1.0/setPanPosition", [](const httplib::Request &, httplib::Response &res) {
+		res.set_content("Set Pan 90.00 degree", "text/plain");
+        char MSB = 0x23;
+        char LSB = 0x28;
+        libserilalptz.setPanPosition(MSB, LSB);
+	});
+    svr.Get("/ptz/v1.0/setTiltPosition", [](const httplib::Request &, httplib::Response &res) {
+		res.set_content("Set Tilt 90.00 degree", "text/plain");
+        char MSB = 0x23;
+        char LSB = 0x28;
+        libserilalptz.setTiltPosition(0x23,0x28);
+	});
 
 
     svr.Post("/ptz/v1.0/panLeft",
@@ -244,5 +256,8 @@ int main()
 
 }
 
-// rsync -a -e "ssh -p 1222" /home/ngoc/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
-// rsync -a -e "ssh -p 1222" /home/ubuntu/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
+// rsync -e "ssh -p 1222" /home/ngoc/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
+// rsync -e "ssh -p 1222" /home/ubuntu/Documents/gsoap/libserialptz nano@tigerpuma.ddns.net:~/ngocnv_ws
+//nat 8000 -> 12800
+//nat 8080 -> 12808
+//http://tigerpuma.ddns.net:12808/ptz/v1.0/setTiltPosition
